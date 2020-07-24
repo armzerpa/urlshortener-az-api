@@ -23,6 +23,10 @@ func NewShortenerService(repo db.UrlRepository) ShortenerService {
 }
 
 func (s *shortener) SaveUrl(longUrl string) (*domain.Url, errors.RestError) {
+	if len(longUrl) == 0 {
+		return nil, errors.NewBadRequestError("url is empty")
+	}
+
 	url, err := s.dbRepo.Save(longUrl)
 	if err != nil {
 		return nil, errors.NewInternalServerError("something went wrong saving url")
@@ -35,6 +39,10 @@ func (s *shortener) GetUrl(shortUrl string) (*domain.Url, errors.RestError) {
 	if err != nil {
 		return nil, errors.NewInternalServerError("something went wrong getting the url")
 	}
+
+	if len(url.ShortUrl) == 0 {
+		return nil, errors.NewNotFoundError("no results")
+	}
 	return url, nil
 }
 
@@ -42,6 +50,10 @@ func (s *shortener) GetById(id string) (*domain.Url, errors.RestError) {
 	url, err := s.dbRepo.GetById(id)
 	if err != nil {
 		return nil, errors.NewInternalServerError("something went wrong getting the url")
+	}
+
+	if len(url.ShortUrl) == 0 {
+		return nil, errors.NewNotFoundError("no results")
 	}
 	return url, nil
 }

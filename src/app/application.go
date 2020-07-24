@@ -11,17 +11,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const (
+	domainUrl = "http://localhost:8080/u/"
+)
+
 var (
 	router = gin.Default()
 )
 
 func StartApplication() {
-	urlHandler := controllers.NewHandler(services.NewShortenerService(db.NewUrlRepository()))
-	router.GET("/ping", Ping)
-	router.GET("u/:url_id", urlHandler.RedirectUrl)
-	router.GET("/shortener/url", urlHandler.GetUrl)
+	urlHandler := controllers.NewHandler(services.NewShortenerService(db.NewUrlRepository(domainUrl)))
 
-	router.POST("/url", urlHandler.CreateUrl)
+	v1 := router.Group("/v1")
+	{
+		v1.GET("/ping", Ping)
+		v1.GET("/shortener/url", urlHandler.GetUrl)
+		v1.POST("/shortener", urlHandler.CreateUrl)
+	}
+	router.GET("u/:url_id", urlHandler.RedirectUrl)
 
 	router.Run(":8080")
 }

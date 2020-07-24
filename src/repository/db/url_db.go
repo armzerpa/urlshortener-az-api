@@ -11,7 +11,10 @@ import (
 const (
 	queryGetUrlDocumentWithLongUrl  = "SELECT `shortener-url`.* FROM `shortener-url` WHERE longUrl = $1"
 	queryGetUrlDocumentWithShortUrl = "SELECT `shortener-url`.* FROM `shortener-url` WHERE shortUrl = $1"
-	dominUrl                        = "http://localhost:8080/u/"
+)
+
+var (
+	domainUrl string
 )
 
 type UrlRepository interface {
@@ -38,7 +41,7 @@ func (u *urlCouchbaseRepo) Save(longUrl string) (*domain.Url, error) {
 	if row == (domain.Url{}) {
 		id := hash.GetHasher().GetHashId()
 		url.ID = id
-		url.ShortUrl = dominUrl + id
+		url.ShortUrl = domainUrl + id
 		url.LongUrl = longUrl
 		bucket.Insert(url.ID, url, 0)
 	} else {
@@ -65,6 +68,7 @@ func (u *urlCouchbaseRepo) GetById(id string) (*domain.Url, error) {
 	return &url, nil
 }
 
-func NewUrlRepository() UrlRepository {
+func NewUrlRepository(d string) UrlRepository {
+	domainUrl = d
 	return &urlCouchbaseRepo{}
 }
