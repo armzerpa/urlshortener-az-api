@@ -1,9 +1,13 @@
 # urlshortener-az-api
 Go practice project 
 
-Creator: Armando Zerpa<armando.zerpa@mercadolibre.com.co>
+Creador: Armando Zerpa <armando.zerpa@mercadolibre.com.co>
 
-Descripcion: Api para acortar URLs
+Descripcion: 
+
+Api para acortar URLs
+
+DOCUMENTACION:
 
 POST: /v1/shortener
 
@@ -12,6 +16,7 @@ POST: /v1/shortener
 }
 
 Respuesta:
+
 {
     "id": "B80q91Q",
     "longUrl": "https://github.com/gin-gonic/gin#grouping-routes",
